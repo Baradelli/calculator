@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+
+    <title>Document</title>
+  </head>
+  <body>
+    <main class="calculate">
+      <div class="visor">
+        <div class="pre-calculation"></div>
+        <div class="result">
+          <img src="./assets/equalGray.svg" alt="" />
+          <span class="result-text"></span>
+        </div>
+      </div>
+
+      <div class="keyboard">
+        <button onclick="test('CE', 'action')" class="button color-violet-400">
+          CE
+        </button>
+
+        <button onclick="test('C', 'action')" class="button">C</button>
+
+        <button onclick="test('%', 'operation')" class="button">
+          <img src="./assets/percent.svg" alt="" />
+        </button>
+
+        <button onclick="test('/', 'operation')" class="button bg-violet-100">
+          <img src="./assets/divide.svg" alt="" />
+        </button>
+
+        <button onclick="test('7', 'number')" class="button">7</button>
+
+        <button onclick="test('8', 'number')" class="button">8</button>
+
+        <button onclick="test('9', 'number')" class="button">9</button>
+
+        <button onclick="test('x', 'operation')" class="button bg-violet-100">
+          <img src="./assets/x.svg" alt="" />
+        </button>
+
+        <button onclick="test('4', 'number')" class="button">4</button>
+
+        <button onclick="test('5', 'number')" class="button">5</button>
+
+        <button onclick="test('6', 'number')" class="button">6</button>
+
+        <button onclick="test('-', 'operation')" class="button bg-violet-100">
+          <img src="./assets/minus.svg" alt="" />
+        </button>
+
+        <button onclick="test('1', 'number')" class="button">1</button>
+
+        <button onclick="test('2', 'number')" class="button">2</button>
+
+        <button onclick="test('3', 'number')" class="button">3</button>
+
+        <button onclick="test('+', 'operation')" class="button bg-violet-100">
+          <img src="./assets/plus.svg" alt="" />
+        </button>
+
+        <button onclick="test('plusMinus', 'action')" class="button">
+          <img src="./assets/plusMinus.svg" alt="" />
+        </button>
+
+        <button onclick="test('0', 'number')" class="button">0</button>
+
+        <button onclick="test(',', 'comma')" class="button">,</button>
+
+        <button onclick="test('=', 'equal')" class="button equal-bg">
+          <img src="./assets/equal.svg" alt="" />
+        </button>
+      </div>
+    </main>
+
+    <script>
+      const preCalculation = document.querySelector(".pre-calculation");
+      const resultText = document.querySelector(".result-text");
+
+      let number1 = "";
+      let operation = "";
+      let number2 = "";
+      let result = "";
+
+      function calculateTotal(value, calledByOperation) {
+        if (!number1 || !number2) {
+          alert("Please enter two numbers and one operation");
+
+          return;
+        }
+
+        const formatedNumber1 = Number(
+          number1.replace(",", ".").replace("(", "")
+        );
+        const formatedNumber2 = Number(
+          number2.replace(",", ".").replace("(", "")
+        );
+
+        switch (operation) {
+          case "+":
+            result = formatedNumber1 + formatedNumber2;
+            break;
+          case "-":
+            result = formatedNumber1 - formatedNumber2;
+            break;
+          case "x":
+            result = formatedNumber1 * formatedNumber2;
+            break;
+          case "/":
+            result = formatedNumber1 / formatedNumber2;
+            break;
+          default:
+            break;
+        }
+
+        if (calledByOperation) {
+          number1 = String(result);
+          operation = value;
+        } else {
+          number1 = "";
+          operation = "";
+        }
+        number2 = "";
+
+        preCalculation.innerHTML = number1 + operation + number2;
+        resultText.innerHTML = result;
+      }
+
+      function numberService(value) {
+        if (operation) {
+          number2 += value;
+        } else {
+          number1 += value;
+        }
+
+        preCalculation.innerHTML = number1 + operation + number2;
+      }
+
+      function operationService(value) {
+        if (!number1 && result) {
+          number1 = result;
+          operation = value;
+        } else if (operation && number2) {
+          calculateTotal(value, true);
+          console.log("here");
+        } else {
+          operation = value;
+        }
+
+        preCalculation.innerHTML = number1 + operation + number2;
+      }
+
+      function actionService(value) {
+        if (value === "C") {
+          number1 = "";
+          operation = "";
+          number2 = "";
+          result = "";
+        } else if (value === "CE") {
+          if (number1 === "" && result) {
+            result = "";
+          } else if (number2) {
+            number2 = "";
+          } else if (operation) {
+            operation = "";
+          } else {
+            number1 = "";
+          }
+        } else {
+          if (number2) {
+            const formatedNumber2 = Number(number2.replace("(", ""));
+
+            number2 =
+              String(Number(formatedNumber2) * -1) > 0
+                ? String(Number(formatedNumber2) * -1)
+                : String("(" + Number(formatedNumber2) * -1);
+          } else if (number1) {
+            const formatedNumber1 = Number(number1.replace("(", ""));
+
+            number1 =
+              String(Number(formatedNumber1) * -1) > 0
+                ? String(Number(formatedNumber1) * -1)
+                : String("(" + Number(formatedNumber1) * -1);
+          }
+        }
+
+        preCalculation.innerHTML = number1 + operation + number2;
+        resultText.innerHTML = result;
+      }
+
+      function commaService(value) {
+        if (number1) {
+          if (operation) {
+            if (number2.includes(value)) return;
+
+            number2 += value;
+          } else {
+            if (number1.includes(value)) return;
+
+            number1 += value;
+          }
+        }
+
+        preCalculation.innerHTML = number1 + operation + number2;
+      }
+
+      function test(value, type) {
+        switch (type) {
+          case "number":
+            return numberService(value);
+          case "operation":
+            return operationService(value);
+          case "equal":
+            return calculateTotal(operation);
+          case "action":
+            return actionService(value);
+          case "comma":
+            return commaService(value);
+          default:
+            return;
+        }
+      }
+    </script>
+  </body>
+</html>
