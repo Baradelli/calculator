@@ -96,6 +96,11 @@
       let result = "";
 
       function calculateTotal(value, calledByOperation) {
+        if (value === "%") {
+          calculateTotalWith1Number();
+          return;
+        }
+
         if (!number1 || !number2) {
           alert("Please enter two numbers and one operation");
 
@@ -103,7 +108,7 @@
         }
 
         const formatedNumber1 = Number(
-          number1.replace(",", ".").replace("(", "")
+          String(number1).replace(",", ".").replace("(", "")
         );
         const formatedNumber2 = Number(
           number2.replace(",", ".").replace("(", "")
@@ -139,6 +144,21 @@
         resultText.innerHTML = result;
       }
 
+      function calculateTotalWith1Number() {
+        const formatedNumber1 = Number(
+          String(number1).replace(",", ".").replace("(", "")
+        );
+
+        result = formatedNumber1 / 100;
+
+        preCalculation.innerHTML = "";
+        resultText.innerHTML = result;
+
+        number1 = "";
+        operation = "";
+        number2 = "";
+      }
+
       function numberService(value) {
         if (operation) {
           number2 += value;
@@ -155,7 +175,6 @@
           operation = value;
         } else if (operation && number2) {
           calculateTotal(value, true);
-          console.log("here");
         } else {
           operation = value;
         }
@@ -188,7 +207,7 @@
                 ? String(Number(formatedNumber2) * -1)
                 : String("(" + Number(formatedNumber2) * -1);
           } else if (number1) {
-            const formatedNumber1 = Number(number1.replace("(", ""));
+            const formatedNumber1 = Number(String(number1).replace("(", ""));
 
             number1 =
               String(Number(formatedNumber1) * -1) > 0
